@@ -175,7 +175,7 @@ int external_merge_sort_withstop(const char *input, const char *output,
             {
                 // list<string> newVec;
                 List<string> newVec;
-                string outFile = totalRuns == 2 ? output : "temp." + to_string(stage) + "." + to_string(runNum++);
+                string outFile = totalRuns <=k ? output : "temp." + to_string(stage) + "." + to_string(runNum++);
 
                 for (int i = start; i <= min(end, totalRuns - 1); i++)
                 {
@@ -207,7 +207,7 @@ int main()
     auto begin = std::chrono::high_resolution_clock::now();
     // int totalMerges = external_merge_sort_withstop("random_10gb.list", "output", 2526350, 8);
     // int totalMerges = external_merge_sort_withstop("englishsubset.txt", "output", 1000000);
-    int totalMerges = external_merge_sort_withstop("random.txt", "output", 1000000, 8);
+    int totalMerges = external_merge_sort_withstop("english.txt", "output", 1000000, 8);
     cout << totalMerges;
     auto end = std::chrono::high_resolution_clock::now();
     auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);    
