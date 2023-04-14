@@ -1,4 +1,3 @@
-//! This code counts merge of less than "k" runs in the merge_steps as well as carrying a single merge forward
 #include <chrono>
 #include <iostream>
 #include <fstream>
@@ -8,9 +7,7 @@
 #include <string>
 
 using namespace std;
-#define INITIALRUNSIZE 104857 // 104857 
-
-list<string> runs;
+#define INITIALRUNSIZE 904857 //==904MB
 
 struct Node
 {
@@ -82,7 +79,7 @@ void mergeRuns(const list<string> &inputFiles, const string &outputFile)
     output_file_ptr.close();
 }
 
-void createInitialRuns(const string &inputF, const long key_count)
+void createInitialRuns(const string &inputF, const long key_count,list<string> &runs)
 {
     ifstream inputFile(inputF);
 
@@ -114,10 +111,10 @@ void createInitialRuns(const string &inputF, const long key_count)
 int externalmergesortwithstop(const char *input, const char *output,
                               const long key_count, const int k = 2, const int num_merges = 0)
 {
-
+    list<string> runs;
     try
     {
-        createInitialRuns(input, key_count);
+        createInitialRuns(input, key_count,runs);
         int numMerges = num_merges;
         if (numMerges == 0)
         {
@@ -176,9 +173,9 @@ int main()
 {
     auto begin = std::chrono::high_resolution_clock::now();
     // int totalMerges = externalmergesortwithstop("englishsubset.txt", "output", 1000000);
-    int totalMerges = externalmergesortwithstop("random.txt", "output", 1000000);
+    int totalMerges = externalmergesortwithstop("englishsubset.txt", "output", 100000000,8);
     cout << totalMerges;
     auto end = std::chrono::high_resolution_clock::now();
-    auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);    
+    auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
     cout << "\nTime measured: " << elapsed.count() * 1e-9 << " seconds.\n";
 }
