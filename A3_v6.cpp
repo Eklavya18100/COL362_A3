@@ -7,123 +7,164 @@
 #include <queue>
 #include <string>
 #include <algorithm>
+using namespace std;
+#define INITIALRUNSIZE 104857 // 104857
 
 template <typename T>
-class List {
+class List
+{
 private:
-    struct Node {
+    struct Node
+    {
         T data;
         Node *next;
         Node(const T &d) : data(d), next(nullptr) {}
     };
     Node *head;
+
 public:
-    class iterator {
+    class iterator
+    {
     private:
         Node *current;
+
     public:
         iterator(Node *n = nullptr) : current(n) {}
-        iterator &operator++() {
+        iterator &operator++()
+        {
             current = current->next;
             return *this;
         }
-        T &operator*() {
+        T &operator*()
+        {
             return current->data;
         }
-        bool operator==(const iterator &other) const {
+        bool operator==(const iterator &other) const
+        {
             return current == other.current;
         }
-        bool operator!=(const iterator &other) const {
+        bool operator!=(const iterator &other) const
+        {
             return !(*this == other);
         }
     };
+
     List() : head(nullptr) {}
-    ~List() {
-        while (head != nullptr) {
+    ~List()
+    {
+        while (head != nullptr)
+        {
             Node *temp = head;
             head = head->next;
             delete temp;
         }
     }
-    void push_back(const T &data) {
+
+    void push_back(const T &data)
+    {
         Node *temp = new Node(data);
-        if (head == nullptr) {
+        if (head == nullptr)
+        {
             head = temp;
-        } else {
+        }
+        else
+        {
             Node *current = head;
-            while (current->next != nullptr) {
+            while (current->next != nullptr)
+            {
                 current = current->next;
             }
             current->next = temp;
         }
     }
-    void sort() {
-        if (head == nullptr || head->next == nullptr) {
+
+    void sort()
+    {
+        if (head == nullptr || head->next == nullptr)
+        {
             return;
         }
         List<T> left, right;
         int size = 0;
-        for (Node *current = head; current != nullptr; current = current->next) {
+        for (Node *current = head; current != nullptr; current = current->next)
+        {
             ++size;
         }
         int middle = size / 2;
         Node *current = head;
-        for (int i = 0; i < middle; ++i) {
+        for (int i = 0; i < middle; ++i)
+        {
             left.push_back(current->data);
             current = current->next;
         }
-        for (; current != nullptr; current = current->next) {
+        for (; current != nullptr; current = current->next)
+        {
             right.push_back(current->data);
         }
         left.sort();
         right.sort();
         head = nullptr;
-        while (left.head != nullptr && right.head != nullptr) {
-            if (left.head->data < right.head->data) {
+        while (left.head != nullptr && right.head != nullptr)
+        {
+            if (left.head->data < right.head->data)
+            {
                 push_back(left.head->data);
                 left.head = left.head->next;
-            } else {
+            }
+            else
+            {
                 push_back(right.head->data);
                 right.head = right.head->next;
             }
         }
-        while (left.head != nullptr) {
+        while (left.head != nullptr)
+        {
             push_back(left.head->data);
             left.head = left.head->next;
         }
-        while (right.head != nullptr) {
+        while (right.head != nullptr)
+        {
             push_back(right.head->data);
             right.head = right.head->next;
         }
     }
-    int size() const {
+
+    int size() const
+    {
         int size = 0;
-        for (Node *current = head; current != nullptr; current = current->next) {
+        for (Node *current = head; current != nullptr; current = current->next)
+        {
             ++size;
         }
         return size;
     }
-    T &front() {
+
+    T &front()
+    {
         return head->data;
     }
-    void pop_front() {
-        if (head == nullptr) {
+
+    void pop_front()
+    {
+        if (head == nullptr)
+        {
             return;
         }
         Node *temp = head;
         head = head->next;
         delete temp;
     }
-    iterator begin() const {
+
+    iterator begin() const
+    {
         return iterator(head);
     }
-    iterator end() const {
+
+    iterator end() const
+    {
         return iterator(nullptr);
     }
 };
-
-using namespace std;
-#define INITIALRUNSIZE 104857 // 104857 
 
 // list<string> runs;
 List<string> runs;
@@ -188,6 +229,27 @@ void mergeRuns(const List<string> &inputFiles, const string &outputFile)
     output_file_ptr.close();
 }
 
+void quicksort(std::deque<std::string>& arr, int low, int high) {
+    if (low < high) {
+        // Partition the array and get the pivot index
+        int pivotIndex = low + (high - low) / 2;
+        std::string pivotValue = arr[pivotIndex];
+        int i = low, j = high;
+        while (i <= j) {
+            while (arr[i] < pivotValue) { i++; }
+            while (arr[j] > pivotValue) { j--; }
+            if (i <= j) {
+                std::swap(arr[i], arr[j]);
+                i++; j--;
+            }
+        }
+        
+        // Recursively sort the left and right subarrays
+        quicksort(arr, low, j);
+        quicksort(arr, i, high);
+    }
+}
+
 void createInitialRuns(const string &inputF, const long key_count)
 {
     ifstream inputFile(inputF);
@@ -206,7 +268,7 @@ void createInitialRuns(const string &inputF, const long key_count)
             temp.push_back(move(line)); // use std::move to avoid copying
             keys++;
         }
-        sort(temp.begin(), temp.end());
+        quicksort(temp,0, temp.size());
         int t = temp.size();
         while (t-- != 0)
         {
@@ -216,8 +278,8 @@ void createInitialRuns(const string &inputF, const long key_count)
     }
 }
 
-int externalmergesortwithstop(const char *input, const char *output,
-                              const long key_count, const int k = 3, const int num_merges = 0)
+int external_merge_sort_withstop(const char *input, const char *output,
+                              const long key_count, const int k = 2, const int num_merges = 0)
 {
 
     try
@@ -283,9 +345,9 @@ int main()
     auto begin = std::chrono::high_resolution_clock::now();
     // int totalMerges = externalmergesortwithstop("random_10gb.list", "output", 2526350);
     // int totalMerges = externalmergesortwithstop("englishsubset.txt", "output", 1000000);
-    int totalMerges = externalmergesortwithstop("random.txt", "output", 1000000);
+    int totalMerges = external_merge_sort_withstop("random.list", "output", 1000000);
     cout << totalMerges;
     auto end = std::chrono::high_resolution_clock::now();
-    auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);    
+    auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
     cout << "\nTime measured: " << elapsed.count() * 1e-9 << " seconds.\n";
 }
