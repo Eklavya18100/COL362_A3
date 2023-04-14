@@ -7,166 +7,49 @@
 #include <queue>
 #include <string>
 #include <algorithm>
+#include <cstring>
+#include <cmath>
+
 using namespace std;
-#define INITIALRUNSIZE 104857 // 104857
+#define INITIALRUNSIZE 209714// 104857 // 104857 
 
 template <typename T>
-class List
-{
+class List {
 private:
-    struct Node
-    {
-        T data;
-        Node *next;
-        Node(const T &d) : data(d), next(nullptr) {}
-    };
-    Node *head;
-
+    std::vector<T> data;
 public:
-    class iterator
-    {
-    private:
-        Node *current;
-
-    public:
-        iterator(Node *n = nullptr) : current(n) {}
-        iterator &operator++()
-        {
-            current = current->next;
-            return *this;
-        }
-        T &operator*()
-        {
-            return current->data;
-        }
-        bool operator==(const iterator &other) const
-        {
-            return current == other.current;
-        }
-        bool operator!=(const iterator &other) const
-        {
-            return !(*this == other);
-        }
-    };
-
-    List() : head(nullptr) {}
-    ~List()
-    {
-        while (head != nullptr)
-        {
-            Node *temp = head;
-            head = head->next;
-            delete temp;
-        }
+    List() {}
+    ~List() {}
+    void push_back(const T &value) {
+        data.push_back(value);
+    }
+    void sort() {
+        std::sort(data.begin(), data.end());
+    }
+    int size() const {
+        return data.size();
+    }
+    T &front() {
+        return data.front();
+    }
+    void pop_front() {
+        data.erase(data.begin());
+    }
+    typename std::vector<T>::iterator begin() {
+        return data.begin();
+    }
+    typename std::vector<T>::iterator end() {
+        return data.end();
+    }
+    typename std::vector<T>::const_iterator begin() const {
+        return data.begin();
     }
 
-    void push_back(const T &data)
-    {
-        Node *temp = new Node(data);
-        if (head == nullptr)
-        {
-            head = temp;
-        }
-        else
-        {
-            Node *current = head;
-            while (current->next != nullptr)
-            {
-                current = current->next;
-            }
-            current->next = temp;
-        }
-    }
-
-    void sort()
-    {
-        if (head == nullptr || head->next == nullptr)
-        {
-            return;
-        }
-        List<T> left, right;
-        int size = 0;
-        for (Node *current = head; current != nullptr; current = current->next)
-        {
-            ++size;
-        }
-        int middle = size / 2;
-        Node *current = head;
-        for (int i = 0; i < middle; ++i)
-        {
-            left.push_back(current->data);
-            current = current->next;
-        }
-        for (; current != nullptr; current = current->next)
-        {
-            right.push_back(current->data);
-        }
-        left.sort();
-        right.sort();
-        head = nullptr;
-        while (left.head != nullptr && right.head != nullptr)
-        {
-            if (left.head->data < right.head->data)
-            {
-                push_back(left.head->data);
-                left.head = left.head->next;
-            }
-            else
-            {
-                push_back(right.head->data);
-                right.head = right.head->next;
-            }
-        }
-        while (left.head != nullptr)
-        {
-            push_back(left.head->data);
-            left.head = left.head->next;
-        }
-        while (right.head != nullptr)
-        {
-            push_back(right.head->data);
-            right.head = right.head->next;
-        }
-    }
-
-    int size() const
-    {
-        int size = 0;
-        for (Node *current = head; current != nullptr; current = current->next)
-        {
-            ++size;
-        }
-        return size;
-    }
-
-    T &front()
-    {
-        return head->data;
-    }
-
-    void pop_front()
-    {
-        if (head == nullptr)
-        {
-            return;
-        }
-        Node *temp = head;
-        head = head->next;
-        delete temp;
-    }
-
-    iterator begin() const
-    {
-        return iterator(head);
-    }
-
-    iterator end() const
-    {
-        return iterator(nullptr);
+    typename std::vector<T>::const_iterator end() const {
+        return data.end();
     }
 };
 
-// list<string> runs;
 List<string> runs;
 
 struct Node
@@ -189,7 +72,6 @@ struct compareVal
     }
 };
 
-// void mergeRuns(const list<string> &inputFiles, const string &outputFile)
 void mergeRuns(const List<string> &inputFiles, const string &outputFile)
 {
     // Open all the input files in read mode
@@ -247,8 +129,8 @@ void createInitialRuns(const string &inputF, const long key_count)
             temp.push_back(move(line)); // use std::move to avoid copying
             keys++;
         }
-        // quicksort(temp, 0, temp.size());
-        sort(temp.begin(),temp.end());
+        // introsort(temp);
+        sort(temp.begin(), temp.end());
         int t = temp.size();
         while (t-- != 0)
         {
@@ -323,11 +205,11 @@ int external_merge_sort_withstop(const char *input, const char *output,
 int main()
 {
     auto begin = std::chrono::high_resolution_clock::now();
-    // int totalMerges = externalmergesortwithstop("random_10gb.list", "output", 2526350);
-    // int totalMerges = externalmergesortwithstop("englishsubset.txt", "output", 1000000);
-    int totalMerges = external_merge_sort_withstop("random.list", "output", 1000000);
+    // int totalMerges = external_merge_sort_withstop("random_10gb.list", "output", 2526350, 8);
+    // int totalMerges = external_merge_sort_withstop("englishsubset.txt", "output", 1000000);
+    int totalMerges = external_merge_sort_withstop("random.txt", "output", 1000000, 8);
     cout << totalMerges;
     auto end = std::chrono::high_resolution_clock::now();
-    auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
+    auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);    
     cout << "\nTime measured: " << elapsed.count() * 1e-9 << " seconds.\n";
 }
