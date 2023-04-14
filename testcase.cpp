@@ -5,7 +5,7 @@
 
 int main() {
     const std::string filename = "random.list";
-    const uint64_t file_size = 10ULL * 1024ULL * 1024ULL * 102ULL; // 10GB
+    const uint64_t file_size = 10ULL * 1024ULL * 1024ULL * 1024ULL; // 10GB
 
     std::ofstream fout(filename);
     if (!fout.is_open()) {

@@ -1,4 +1,4 @@
-
+//! Convert to C and implement priority queue
 #include <chrono>
 #include <iostream>
 #include <fstream>
@@ -11,41 +11,52 @@
 #include <cmath>
 
 using namespace std;
-#define INITIALRUNSIZE 209714// 104857 // 104857 
+#define INITIALRUNSIZE 209714 // 104857 // 104857
 
 template <typename T>
-class List {
+class List
+{
 private:
     std::vector<T> data;
+
 public:
     List() {}
     ~List() {}
-    void push_back(const T &value) {
+    void push_back(const T &value)
+    {
         data.push_back(value);
     }
-    void sort() {
+    void sort()
+    {
         std::sort(data.begin(), data.end());
     }
-    int size() const {
+    int size() const
+    {
         return data.size();
     }
-    T &front() {
+    T &front()
+    {
         return data.front();
     }
-    void pop_front() {
+    void pop_front()
+    {
         data.erase(data.begin());
     }
-    typename std::vector<T>::iterator begin() {
+    typename std::vector<T>::iterator begin()
+    {
         return data.begin();
     }
-    typename std::vector<T>::iterator end() {
+    typename std::vector<T>::iterator end()
+    {
         return data.end();
     }
-    typename std::vector<T>::const_iterator begin() const {
+    typename std::vector<T>::const_iterator begin() const
+    {
         return data.begin();
     }
 
-    typename std::vector<T>::const_iterator end() const {
+    typename std::vector<T>::const_iterator end() const
+    {
         return data.end();
     }
 };
@@ -175,7 +186,7 @@ int external_merge_sort_withstop(const char *input, const char *output,
             {
                 // list<string> newVec;
                 List<string> newVec;
-                string outFile = totalRuns <=k ? output : "temp." + to_string(stage) + "." + to_string(runNum++);
+                string outFile = totalRuns <= k ? output : "temp." + to_string(stage) + "." + to_string(runNum++);
 
                 for (int i = start; i <= min(end, totalRuns - 1); i++)
                 {
@@ -207,9 +218,10 @@ int main()
     auto begin = std::chrono::high_resolution_clock::now();
     // int totalMerges = external_merge_sort_withstop("random_10gb.list", "output", 2526350, 8);
     // int totalMerges = external_merge_sort_withstop("englishsubset.txt", "output", 1000000);
-    int totalMerges = external_merge_sort_withstop("english.txt", "output", 1000000, 8);
+    long key_count=1000000000;
+    int totalMerges = external_merge_sort_withstop("random.list", "output", key_count, 8);
     cout << totalMerges;
     auto end = std::chrono::high_resolution_clock::now();
-    auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);    
+    auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
     cout << "\nTime measured: " << elapsed.count() * 1e-9 << " seconds.\n";
 }
