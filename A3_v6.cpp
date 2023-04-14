@@ -1,4 +1,4 @@
-//! This code counts merge of less than "k" runs in the merge_steps as well as carrying a single merge forward
+
 #include <chrono>
 #include <iostream>
 #include <fstream>
@@ -229,27 +229,6 @@ void mergeRuns(const List<string> &inputFiles, const string &outputFile)
     output_file_ptr.close();
 }
 
-void quicksort(std::deque<std::string>& arr, int low, int high) {
-    if (low < high) {
-        // Partition the array and get the pivot index
-        int pivotIndex = low + (high - low) / 2;
-        std::string pivotValue = arr[pivotIndex];
-        int i = low, j = high;
-        while (i <= j) {
-            while (arr[i] < pivotValue) { i++; }
-            while (arr[j] > pivotValue) { j--; }
-            if (i <= j) {
-                std::swap(arr[i], arr[j]);
-                i++; j--;
-            }
-        }
-        
-        // Recursively sort the left and right subarrays
-        quicksort(arr, low, j);
-        quicksort(arr, i, high);
-    }
-}
-
 void createInitialRuns(const string &inputF, const long key_count)
 {
     ifstream inputFile(inputF);
@@ -268,7 +247,8 @@ void createInitialRuns(const string &inputF, const long key_count)
             temp.push_back(move(line)); // use std::move to avoid copying
             keys++;
         }
-        quicksort(temp,0, temp.size());
+        // quicksort(temp, 0, temp.size());
+        sort(temp.begin(),temp.end());
         int t = temp.size();
         while (t-- != 0)
         {
@@ -279,7 +259,7 @@ void createInitialRuns(const string &inputF, const long key_count)
 }
 
 int external_merge_sort_withstop(const char *input, const char *output,
-                              const long key_count, const int k = 2, const int num_merges = 0)
+                                 const long key_count, const int k = 2, const int num_merges = 0)
 {
 
     try
