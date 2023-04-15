@@ -10,14 +10,13 @@
 #include <cmath>
 
 using namespace std;
-#define INITIALRUNSIZE 409714 // 104857 // 104857
+#define INITIALRUNSIZE 809714 // 104857 // 104857
 
 template <typename T>
 class List
 {
 private:
     std::vector<T> data;
-
 public:
     List() {}
     ~List() {}
@@ -125,13 +124,14 @@ void createInitialRuns(const string &inputF, const long key_count)
     ifstream inputFile(inputF);
     int runNum = 0;
     int keys = 0;
-    while (!inputFile.eof() && keys < key_count)
+    string line;
+    while (getline(inputFile, line)&& keys < key_count)
     {
         string fileName = "temp.0." + to_string(runNum++);
         ofstream outputFile(fileName);
         runs.push_back(fileName);
         deque<string> temp;
-        string line;
+        temp.push_back(move(line));
         for (int ct = 0; ct < INITIALRUNSIZE && getline(inputFile, line) && keys < key_count; ct++)
         {
             temp.push_back(move(line)); // use std::move to avoid copying
@@ -213,7 +213,7 @@ int main()
     auto begin = std::chrono::high_resolution_clock::now();
     // int totalMerges = external_merge_sort_withstop("random_10gb.list", "output", 2526350, 8);
     // int totalMerges = external_merge_sort_withstop("englishsubset.txt", "output", 1000000);
-    int totalMerges = external_merge_sort_withstop("random.txt", "output", 100000000, 8);
+    int totalMerges = external_merge_sort_withstop("test3", "output", 100000000, 16);
     cout << totalMerges;
     auto end = std::chrono::high_resolution_clock::now();
     auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
