@@ -10,7 +10,7 @@
 #include <cmath>
 
 using namespace std;
-constexpr int INITIALRUNSIZE = 504857; // 104857 // 104857
+#define INITIALRUNSIZE 409714 // 104857 // 104857
 
 template <typename T>
 class List
@@ -182,7 +182,7 @@ int external_merge_sort_withstop(const char *input, const char *output,
             {
                 // list<string> newVec;
                 List<string> newVec;
-                string outFile = totalRuns == 2 ? output : "temp." + to_string(stage) + "." + to_string(runNum++);
+                string outFile = totalRuns <= k ? output : "temp." + to_string(stage) + "." + to_string(runNum++);
 
                 for (int i = start; i <= min(end, totalRuns - 1); i++)
                 {
