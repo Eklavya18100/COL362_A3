@@ -1,4 +1,3 @@
-
 #include <chrono>
 #include <iostream>
 #include <fstream>
@@ -11,41 +10,52 @@
 #include <cmath>
 
 using namespace std;
-#define INITIALRUNSIZE 209714// 104857 // 104857 
+constexpr int INITIALRUNSIZE = 504857; // 104857 // 104857
 
 template <typename T>
-class List {
+class List
+{
 private:
     std::vector<T> data;
+
 public:
     List() {}
     ~List() {}
-    void push_back(const T &value) {
+    void push_back(const T &value)
+    {
         data.push_back(value);
     }
-    void sort() {
+    void sort()
+    {
         std::sort(data.begin(), data.end());
     }
-    int size() const {
+    int size() const
+    {
         return data.size();
     }
-    T &front() {
+    T &front()
+    {
         return data.front();
     }
-    void pop_front() {
+    void pop_front()
+    {
         data.erase(data.begin());
     }
-    typename std::vector<T>::iterator begin() {
+    typename std::vector<T>::iterator begin()
+    {
         return data.begin();
     }
-    typename std::vector<T>::iterator end() {
+    typename std::vector<T>::iterator end()
+    {
         return data.end();
     }
-    typename std::vector<T>::const_iterator begin() const {
+    typename std::vector<T>::const_iterator begin() const
+    {
         return data.begin();
     }
 
-    typename std::vector<T>::const_iterator end() const {
+    typename std::vector<T>::const_iterator end() const
+    {
         return data.end();
     }
 };
@@ -76,7 +86,7 @@ void mergeRuns(const List<string> &inputFiles, const string &outputFile)
 {
     // Open all the input files in read mode
     vector<ifstream> input_file_ptrs;
-    for (const auto &file : inputFiles)
+    for (auto const &file : inputFiles)
     {
         input_file_ptrs.emplace_back(move(file));
     }
@@ -85,10 +95,9 @@ void mergeRuns(const List<string> &inputFiles, const string &outputFile)
     // Initialize a priority queue to keep track of the smallest line from each file
     priority_queue<Node *, vector<Node *>, compareVal> pq;
     // Read the first line from each file and store them in the priority queue
-    for (int i = 0; i < input_file_ptrs.size(); i++)
+    string line;
+    for (int i = 0; i < input_file_ptrs.size() && getline(input_file_ptrs[i], line); i++)
     {
-        string line;
-        getline(input_file_ptrs[i], line);
         pq.emplace(new Node(line, i));
     }
     // Merge the files
@@ -122,10 +131,9 @@ void createInitialRuns(const string &inputF, const long key_count)
         ofstream outputFile(fileName);
         runs.push_back(fileName);
         deque<string> temp;
-        for (int ct = 0; ct < INITIALRUNSIZE && !inputFile.eof() && keys < key_count; ct++)
+        string line;
+        for (int ct = 0; ct < INITIALRUNSIZE && getline(inputFile, line) && keys < key_count; ct++)
         {
-            string line;
-            getline(inputFile, line);
             temp.push_back(move(line)); // use std::move to avoid copying
             keys++;
         }
@@ -143,7 +151,6 @@ void createInitialRuns(const string &inputF, const long key_count)
 int external_merge_sort_withstop(const char *input, const char *output,
                                  const long key_count, const int k = 2, const int num_merges = 0)
 {
-
     try
     {
         createInitialRuns(input, key_count);
@@ -191,7 +198,6 @@ int external_merge_sort_withstop(const char *input, const char *output,
                 if (totalMergesSoFar > numMerges)
                     return totalMergesSoFar;
             }
-
             stage++;
         }
         return totalMergesSoFar;
@@ -207,9 +213,9 @@ int main()
     auto begin = std::chrono::high_resolution_clock::now();
     // int totalMerges = external_merge_sort_withstop("random_10gb.list", "output", 2526350, 8);
     // int totalMerges = external_merge_sort_withstop("englishsubset.txt", "output", 1000000);
-    int totalMerges = external_merge_sort_withstop("random.txt", "output", 1000000, 8);
+    int totalMerges = external_merge_sort_withstop("random.txt", "output", 100000000, 8);
     cout << totalMerges;
     auto end = std::chrono::high_resolution_clock::now();
-    auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);    
+    auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
     cout << "\nTime measured: " << elapsed.count() * 1e-9 << " seconds.\n";
 }
