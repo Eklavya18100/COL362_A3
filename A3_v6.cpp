@@ -143,7 +143,7 @@ void createInitialRuns(const string &inputF, const long key_count)
         while (t-- != 0)
         {
             outputFile << temp.front() << "\n";
-            temp.pop_front();
+            temp.pop_front(); 
         }
     }
 }
